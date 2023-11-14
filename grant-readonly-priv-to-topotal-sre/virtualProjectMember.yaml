@@ -1,0 +1,11 @@
+imports:
+- path: https://storage.googleapis.com/topotal-sreaas-cloud-deployment-manager-template/policies.jinja
+
+resources:
+- name: policies
+  type: https://storage.googleapis.com/topotal-sreaas-cloud-deployment-manager-template/policies.jinja
+  properties:
+    roles:
+    - roles/viewer
+    groups:
+    - sre@topotal.com
