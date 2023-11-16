@@ -69,20 +69,38 @@ gcloud projects add-iam-policy-binding ${GOOGLE_CLOUD_PROJECT} \
   --member serviceAccount:YOUR_SERVICE_ACCOUNT --role roles/owner
 ```
 
-## 4. readonly権限の付与
+## 4. 権限付与
 
 以下のコマンドを実行することで、Topotal SREが所属するGoogle Groups(`sre@topotal.com`)に対してプロジェクトレベルのreadonly権限(`roles/viewer`ロール)を付与します。
 
-※ 付与対象のメンバーや権限内容の変更が必要な場合は、virtualProjectMember.yamlを修正してください。
+### 4.1. 付与する権限の確認
+
+デフォルトでは `roles/viewer` 権限（プロジェクトレベルの読み取り権限）を付与します。
 
 ```
-gcloud deployment-manager deployments create grant-readonly-to-topotal-sre \
-  --config grant-readonly-priv-to-topotal-sre/virtualProjectMember.yaml
+  properties:
+    roles:
+    - roles/viewer
 ```
 
-### 4.1 動作確認
+付与する権限を変更する場合は、以下のコマンドで roles 配下のリストを修正してください。
 
-以下のコマンドの出力を確認し、`sre@topotal.com`に対して`roles/viewer`の役割が設定されていれば作業は完了です。
+```
+vim grant-permissions-to-topotal-sre/virtualProjectMember.yaml
+```
+
+### 4.2. 権限付与
+
+Deployment Managerを実行し、権限追加を行います。
+
+```
+gcloud deployment-manager deployments create grant-permissions-to-topotal-sre \
+  --config grant-permissions-to-topotal-sre/virtualProjectMember.yaml
+```
+
+### 4.3. 動作確認
+
+以下のコマンドの出力を確認し、`sre@topotal.com` に対して権限が付与されていれば作業は完了です。
 
 ※ virtualProjectMember.yamlを書き換えた場合は、意図通りの設定が行われているかどうかを確認してください。
 
@@ -95,5 +113,5 @@ gcloud projects get-iam-policy ${GOOGLE_CLOUD_PROJECT}
 なんらかの理由でdeploymentの作成に失敗した場合は、以下のコマンドを実行して作成済みのリソースを削除することで再実行が可能になります。
 
 ```
-gcloud deployment-manager deployments delete grant-readonly-to-topotal-sre
+gcloud deployment-manager deployments delete grant-permissions-to-topotal-sre
 ```
